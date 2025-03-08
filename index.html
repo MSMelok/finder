@@ -1,108 +1,646 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WhatsApp Quick Message</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
+        :root {
+            /* Color System */
+            --primary-gradient: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+            --primary-color: #128C7E;
+            --error-color: #FF4B4B;
+            --success-color: #22C55E;
+            --text-color: #1A1A1A;
+            --text-secondary: #666666;
+            --bg-color: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border-color: #E2E8F0;
+            --theme-toggle-bg: rgba(0, 0, 0, 0.05);
+
+            /* Shadows */
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+            /* Animation */
+            --transition-base: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --text-color: #F1F5F9;
+            --text-secondary: #94A3B8;
+            --bg-color: #0F172A;
+            --card-bg: #1E293B;
+            --border-color: #334155;
+            --theme-toggle-bg: rgba(255, 255, 255, 0.05);
+            --error-color: #F87171;
+            --success-color: #34D399;
+        }
+
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 1fr;
+            padding: 1.5rem;
+            line-height: 1.6;
+            transition: var(--transition-base);
+        }
+
+        .layout {
             display: flex;
-            justify-content: center;
+            grid-template-columns: minmax(auto, 400px) minmax(200px, 300px);
+            gap: 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
             align-items: center;
-            height: 100vh;
+            flex-direction: column;
+            justify-content: center;
         }
+
         .container {
-            background-color: #fff;
+            width: 400px;
+            background-color: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            padding: 2.5rem;
+            position: relative;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .recent-numbers-container {
+            width: 400px;
+            background-color: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            padding: 1.5rem;
+            border: 1px solid var(--border-color);
+            position: sticky;
+            top: 1.5rem;
+        }
+
+        .recent-numbers-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .clear-history {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--error-color);
+            padding: 0.5rem 0.75rem;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            max-width: 400px;
-            text-align: center;
+            font-size: 0.75rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            transition: var(--transition-base);
         }
+
+        .clear-history:hover {
+            background: var(--theme-toggle-bg);
+            transform: translateY(-1px);
+        }
+
         h1 {
-            font-size: 24px;
-            margin-bottom: 20px;
-            color: #25D366;
+            font-size: 1.875rem;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-align: center;
+            margin-bottom: 2rem;
+            letter-spacing: -0.025em;
+            line-height: 1.2;
         }
+
         .input-group {
             display: flex;
-            margin-bottom: 20px;
+            gap: 0.75rem;
+            margin-bottom: 0.5rem;
+            justify-content: center;
         }
-        .input-group input[type="text"] {
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-            width: 100%;
+
+        .country-code {
+            width: 85px !important;
+            flex-shrink: 0;
         }
-        .input-group .country-code {
-            max-width: 80px;
-            margin-right: 10px;
+
+        .phone-number {
+            width: 220px !important;
         }
-        button {
-            background-color: #25D366;
-            color: #fff;
-            padding: 12px;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
+
+        input {
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            transition: var(--transition-base);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(18, 140, 126, 0.15);
+        }
+
+        .error-text {
+            font-size: 0.875rem;
+            margin: 0.25rem 0 1rem;
+            color: var(--error-color);
+            text-align: left;
+            min-height: 1.25rem;
+            padding-left: calc(85px + 0.75rem);
+        }
+
+        .recent-numbers {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .recent-number {
+            padding: 0.75rem;
+            background: var(--theme-toggle-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 0.875rem;
+            color: var(--text-color);
             cursor: pointer;
+            transition: var(--transition-base);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
             width: 100%;
         }
-        button:hover {
-            background-color: #1ebe54;
+
+        .recent-number:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-1px);
+            background: var(--card-bg);
         }
+
+        .theme-toggle {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            padding: 0.75rem;
+            border-radius: 12px;
+            background: var(--theme-toggle-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: var(--transition-base);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle:hover {
+            transform: translateY(-1px);
+            background: var(--theme-toggle-bg);
+        }
+
+        .send-btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
         footer {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #aaa;
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+        }
+
+        footer a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            bottom: -1px;
+            left: 0;
+            background-color: var(--primary-color);
+            transform: scaleX(0);
+            transform-origin: bottom right;
+            transition: transform 0.3s ease;
+        }
+
+        footer a:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+        }
+
+        @media (max-width: 768px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .recent-numbers-container {
+                position: static;
+                margin-top: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 2rem;
+                border-radius: 20px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .error-text {
+                padding-left: 0;
+                text-align: center;
+            }
+
+            input {
+                padding: 0.75rem;
+            }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        .message {
+            font-size: 0.875rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: var(--transition-base);
+        }
+
+        .message.show {
+            opacity: 1;
+        }
+
+        .message.success {
+            background: rgba(34, 197, 94, 0.1);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        .message.error {
+            background: rgba(255, 75, 75, 0.1);
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+
+        .confirmation-dialog {
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--error-color);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .confirmation-dialog.show {
+            display: flex;
+        }
+
+        .confirmation-dialog .actions {
+            margin-left: auto;
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .confirmation-dialog button {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition-base);
+        }
+
+        .confirmation-dialog .confirm-yes {
+            background: var(--error-color);
+            color: white;
+            border: none;
+        }
+
+        .confirmation-dialog .confirm-no {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>WhatsApp Quick Message</h1>
-        <div class="input-group">
-            <input type="text" id="countryCode" class="country-code" placeholder="+1" maxlength="4">
-            <input type="text" id="phoneNumber" placeholder="Enter phone number">
+    <div class="layout">
+        <div class="container">
+            <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode">
+                <i class="ph ph-moon"></i>
+            </button>
+
+            <h1>WhatsApp<br>Quick Message</h1>
+
+            <div class="input-group">
+                <input type="text" 
+                       id="countryCode" 
+                       class="country-code" 
+                       placeholder="+20" 
+                       maxlength="4"
+                       aria-label="Country code">
+                <input type="text" 
+                       id="phoneNumber" 
+                       class="phone-number" 
+                       placeholder="Enter phone number"
+                       aria-label="Phone number">
+            </div>
+            <div class="error-text" id="phoneError" role="alert" aria-live="polite"></div>
+
+            <button class="send-btn" onclick="openWhatsApp()" id="messageBtn">
+                <i class="ph ph-paper-plane-right"></i>
+                Open Chat
+            </button>
+
+            <footer>
+                <p>Not official from WhatsApp Inc.
+                <br>
+                coded by <a href="https://msmelok.github.io/R4_2.0/" target="_blank">Muhammad Meluk</a>
+                </p>
+            </footer>
         </div>
-        <button onclick="openWhatsApp()">Message</button>
-        <footer>
-            <p>Not official from WhatsApp Inc.
-            <br>
-            coded by <a href="https://msmelok.github.io/R4_2.0/" target="_blank" style="font-weight: bold; text-decoration: underline;">Muhammad Meluk</a>
-            </p>
-        </footer>
+
+        <div class="recent-numbers-container">
+            <div class="recent-numbers-title">
+                <div class="title-text">
+                    <i class="ph ph-clock-counter-clockwise"></i>
+                    Recent Numbers
+                </div>
+                <button onclick="showClearConfirmation()" class="clear-history">
+                    <i class="ph ph-trash"></i>
+                    Clear
+                </button>
+            </div>
+            <div id="clearConfirmation" class="confirmation-dialog">
+                <i class="ph ph-warning"></i>
+                <span>Clear all recent numbers?</span>
+                <div class="actions">
+                    <button onclick="clearHistory(true)" class="confirm-yes">Yes</button>
+                    <button onclick="clearHistory(false)" class="confirm-no">No</button>
+                </div>
+            </div>
+            <div id="statusMessage" class="message" style="display: none;"></div>
+            <div id="recentNumbers" class="recent-numbers"></div>
+        </div>
     </div>
 
     <script>
-        function openWhatsApp() {
-            var countryCode = document.getElementById("countryCode").value.trim();
-            var phoneNumber = document.getElementById("phoneNumber").value.trim();
-
-            // Automatically add "+" if it's missing
-            if (!countryCode.startsWith("+")) {
-                countryCode = "+" + countryCode;
+        function validateNumber(countryCode, phoneNumber) {
+            if (!countryCode) {
+                return { isValid: false, error: 'Country code is required' };
             }
-
             if (!/^\+\d{1,4}$/.test(countryCode)) {
-                alert("Invalid country code. Please enter a valid code.");
-                return;
+                return { isValid: false, error: 'Invalid country code format' };
             }
-
+            if (!phoneNumber) {
+                return { isValid: false, error: 'Phone number is required' };
+            }
             if (!/^\d{5,15}$/.test(phoneNumber)) {
-                alert("Invalid phone number. Please enter a number with 5-15 digits.");
+                return { isValid: false, error: 'Phone number must be 5-15 digits' };
+            }
+            return { isValid: true, error: '' };
+        }
+
+        function formatPhoneNumber(phoneNumber) {
+            return phoneNumber.replace(/^0+/, '');
+        }
+
+        function saveRecentNumber(countryCode, phoneNumber) {
+            const recentNumbers = JSON.parse(localStorage.getItem('recentNumbers') || '[]');
+            const newNumber = { countryCode, phoneNumber, timestamp: Date.now() };
+
+            const updatedNumbers = recentNumbers.filter(n => 
+                n.countryCode !== countryCode || n.phoneNumber !== phoneNumber
+            );
+
+            updatedNumbers.unshift(newNumber);
+            const limitedNumbers = updatedNumbers.slice(0, 10);
+            localStorage.setItem('recentNumbers', JSON.stringify(limitedNumbers));
+            displayRecentNumbers();
+        }
+
+        function displayRecentNumbers() {
+            const recentNumbers = JSON.parse(localStorage.getItem('recentNumbers') || '[]');
+            const container = document.getElementById('recentNumbers');
+            container.innerHTML = '';
+
+            if (recentNumbers.length === 0) {
+                container.innerHTML = '<div style="color: var(--text-secondary); text-align: center; padding: 1rem;">No recent numbers</div>';
                 return;
             }
 
-            var url = "https://wa.me/" + countryCode.replace("+", "") + phoneNumber;
-            window.open(url, "_blank");
+            recentNumbers.forEach(number => {
+                const btn = document.createElement('button');
+                btn.className = 'recent-number';
+                btn.innerHTML = `
+                    <i class="ph ph-phone"></i>
+                    ${number.countryCode} ${number.phoneNumber}
+                `;
+                btn.onclick = () => {
+                    const url = `https://wa.me/${number.countryCode.replace('+', '')}${number.phoneNumber}`;
+                    window.open(url, '_blank', 'noopener,noreferrer');
+                };
+                container.appendChild(btn);
+            });
         }
+
+        function showMessage(type, message, duration = 3000) {
+            const messageEl = document.getElementById('statusMessage');
+            messageEl.textContent = message;
+            messageEl.className = `message ${type}`;
+            messageEl.style.display = 'block';
+
+            setTimeout(() => messageEl.classList.add('show'), 10);
+
+            setTimeout(() => {
+                messageEl.classList.remove('show');
+                setTimeout(() => {
+                    messageEl.style.display = 'none';
+                }, 300);
+            }, duration);
+        }
+
+        function showClearConfirmation() {
+            const confirmationEl = document.getElementById('clearConfirmation');
+            confirmationEl.classList.add('show');
+        }
+
+        function clearHistory(confirmed) {
+            const confirmationEl = document.getElementById('clearConfirmation');
+            confirmationEl.classList.remove('show');
+
+            if (confirmed) {
+                localStorage.removeItem('recentNumbers');
+                displayRecentNumbers();
+                showMessage('success', 'Recent numbers cleared successfully');
+            }
+        }
+
+        function validateInputs() {
+            const countryCode = document.getElementById('countryCode').value.trim();
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            const errorElement = document.getElementById('phoneError');
+            const messageBtn = document.getElementById('messageBtn');
+
+            if (countryCode && !countryCode.startsWith('+')) {
+                document.getElementById('countryCode').value = '+' + countryCode;
+            }
+
+            const formattedPhone = formatPhoneNumber(phoneNumber);
+            if (formattedPhone !== phoneNumber) {
+                document.getElementById('phoneNumber').value = formattedPhone;
+            }
+
+            const validation = validateNumber(
+                document.getElementById('countryCode').value.trim(),
+                formattedPhone
+            );
+
+            if (validation.error) {
+                errorElement.textContent = validation.error;
+                errorElement.style.display = 'block';
+            } else {
+                errorElement.style.display = 'none';
+            }
+
+            messageBtn.disabled = !validation.isValid;
+            return validation.isValid;
+        }
+
+        function openWhatsApp() {
+            if (!validateInputs()) return;
+
+            const messageBtn = document.getElementById('messageBtn');
+            const originalContent = messageBtn.innerHTML;
+            const countryCode = document.getElementById('countryCode').value.trim();
+            const phoneNumber = formatPhoneNumber(document.getElementById('phoneNumber').value.trim());
+
+            messageBtn.innerHTML = `
+                <i class="ph ph-spinner loading-spinner"></i>
+                Opening...
+            `;
+            messageBtn.disabled = true;
+
+            try {
+                const url = `https://wa.me/${countryCode.replace('+', '')}${phoneNumber}`;
+                window.open(url, '_blank', 'noopener,noreferrer');
+                saveRecentNumber(countryCode, phoneNumber);
+            } catch (error) {
+                console.error('Error opening WhatsApp:', error);
+                showMessage('error', 'Failed to open WhatsApp');
+            } finally {
+                setTimeout(() => {
+                    messageBtn.innerHTML = originalContent;
+                    messageBtn.disabled = false;
+                }, 500);
+            }
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.querySelector('.theme-toggle i');
+            const isDark = html.getAttribute('data-theme') === 'dark';
+
+            if (isDark) {
+                html.removeAttribute('data-theme');
+                icon.className = 'ph ph-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.setAttribute('data-theme', 'dark');
+                icon.className = 'ph ph-sun';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.querySelector('.theme-toggle i').className = 
+                savedTheme === 'dark' ? 'ph ph-sun' : 'ph ph-moon';
+
+            document.getElementById('countryCode').addEventListener('input', validateInputs);
+            document.getElementById('phoneNumber').addEventListener('input', validateInputs);
+
+            displayRecentNumbers();
+            validateInputs();
+        });
     </script>
 </body>
 </html>
