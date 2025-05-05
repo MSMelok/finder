@@ -37,7 +37,7 @@ A sleek web application that allows users to instantly open WhatsApp chats with 
 ## 👨‍💻 Developer
 
 - **MelokMade Innovations**
-  - Website: [https://melokmade.com](https://melokmade.com)
+  - Website: [https://msmelok.github.io/dev](https://msmelok.github.io/dev)
 
 ## 📝 License
 
