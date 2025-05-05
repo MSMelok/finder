@@ -2,40 +2,42 @@
 
 A sleek web application that allows users to instantly open WhatsApp chats with any phone number without saving contacts. Built with modern web technologies and a focus on user experience.
 
-![WhatsApp Quick Message App](./preview.png)
+![WhatsApp Quick Message App](./images/preview.png)
 
 ## ✨ Features
 
 - 🌐 Direct WhatsApp chat opener without saving contacts
-- 🌙 Dark/Light theme support
-- 📱 Mobile-responsive design
+- 💬 Optional message text that gets pre-filled in WhatsApp
+- 🌙 Dark/Light theme with modern glassmorphism design
+- 📱 Fully responsive design for all devices
 - 🔄 Recent numbers history
-- ✅ Phone number validation
+- ✅ Phone number validation with automatic leading zero removal
 - 🌍 International format support
-- 💾 Local storage for recent numbers
-- 🎨 Modern, clean UI
+- 💾 Local storage for persistent data
+- 📊 Google Analytics integration
+- 🔍 SEO optimized with meta tags
 
 ## 🛠️ Technologies Used
 
 - HTML5
-- CSS3 (Custom properties, Flexbox)
+- CSS3 (Custom properties, Flexbox, Glassmorphism effects)
 - JavaScript (ES6+)
 - Local Storage API
 - WhatsApp Web API
-
+- Google Analytics
 
 ## 💡 Usage
 
 1. Enter the country code (e.g., +1 for USA)
-2. Input the phone number
-3. Click "Open Chat" or hit "Enter" to start a WhatsApp conversation
-4. Recent numbers are automatically saved for quick access
-
+2. Input the phone number (leading zeros will be automatically removed)
+3. Optionally type a message to be pre-filled in WhatsApp
+4. Click "Open Chat" or hit "Enter" to start a WhatsApp conversation
+5. Recent numbers are automatically saved for quick access
 
 ## 👨‍💻 Developer
 
-- **Muhammad Meluk**
-  - Portfolio: [https://msmelok.github.io/R4_2.0](https://msmelok.github.io/R4_2.0)
+- **MelokMade Innovations**
+  - Website: [https://melokmade.com](https://melokmade.com)
 
 ## 📝 License
 
