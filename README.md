@@ -2,7 +2,7 @@
 
 A sleek web application that allows users to instantly open WhatsApp chats with any phone number without saving contacts. Built with modern web technologies and a focus on user experience.
 
-![WhatsApp Quick Message App](./images/preview.png)
+![WhatsApp Quick Message App](./preview.png)
 
 ## ✨ Features
 
